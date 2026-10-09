@@ -1,0 +1,113 @@
+// Micro-Marketplace — catalogue + admin CRUD only (phase 1: no customer
+// accounts, cart, or payment). Domain models are marketplace-specific and
+// deliberately do NOT reuse THOTH's Page/Project models.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING")
+}
+
+model User {
+  id                 String   @id @default(cuid())
+  username           String   @unique
+  password           String
+  role               String   @default("admin")
+  mustChangePassword Boolean  @default(false)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+
+model Category {
+  id          String    @id @default(cuid())
+  name        String
+  slug        String    @unique
+  description String?
+  sortOrder   Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  products    Product[]
+}
+
+model Product {
+  id            String           @id @default(cuid())
+  slug          String           @unique
+  name          String
+  tagline       String?
+  description   String?
+  kind          String           @default("module") // module | template | theme
+  priceCents    Int              @default(0)
+  currency      String           @default("THB")
+  repoUrl       String?
+  releaseUrl    String?
+  demoUrl       String?
+  docsUrl       String?
+  coverImage    String?
+  authorName    String?
+  authorUrl     String?
+  license       String?
+  latestVersion String?
+  minCmsVersion String?
+  isPublished   Boolean          @default(false)
+  isFeatured    Boolean          @default(false)
+  categoryId    String?
+  category      Category?        @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  tags          String[]         @default([])
+  screenshots   Screenshot[]
+  versions      ProductVersion[]
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+
+  @@index([kind, isPublished])
+  @@index([categoryId])
+}
+
+model ProductVersion {
+  id            String   @id @default(cuid())
+  productId     String
+  product       Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  version       String
+  releaseUrl    String?
+  changelog     String?
+  minCmsVersion String?
+  publishedAt   DateTime @default(now())
+  createdAt     DateTime @default(now())
+
+  @@index([productId])
+}
+
+model Screenshot {
+  id        String  @id @default(cuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url       String
+  caption   String?
+  sortOrder Int     @default(0)
+
+  @@index([productId])
+}
+
+model Media {
+  id              String   @id @default(cuid())
+  filename        String
+  originalName    String
+  mimeType        String
+  size            Int
+  url             String
+  storageProvider String   @default("local")
+  storageKey      String?
+  createdAt       DateTime @default(now())
+}
+
+model SiteConfig {
+  id              String   @id @default("singleton")
+  siteName        String   @default("Micro Marketplace")
+  siteDescription String?
+  logoUrl         String?
+  supportEmail    String?
+  updatedAt       DateTime @updatedAt
+}

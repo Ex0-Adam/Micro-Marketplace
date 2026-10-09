@@ -1,0 +1,165 @@
+@import "tailwindcss";
+
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+:root {
+  --background: #ffffff;
+  --foreground: #0f172a;
+  --heading: #020617;
+  --muted-strong: #334155;
+  --muted: #475569;
+  --soft: #64748b;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+html {
+  color-scheme: light;
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--heading);
+}
+
+p,
+label,
+span,
+li,
+a,
+small,
+strong,
+legend {
+  color: inherit;
+}
+
+input,
+textarea,
+select,
+button {
+  color: #0f172a;
+}
+
+::placeholder {
+  color: #94a3b8;
+  opacity: 1;
+}
+
+.text-slate-400 {
+  color: #64748b !important;
+}
+
+.text-slate-500 {
+  color: #475569 !important;
+}
+
+.text-slate-600 {
+  color: #334155 !important;
+}
+
+.admin-shell {
+  background:
+    radial-gradient(circle at 0% 0%, rgba(34, 211, 238, 0.14), transparent 28%),
+    radial-gradient(circle at 100% 10%, rgba(99, 102, 241, 0.18), transparent 30%),
+    linear-gradient(180deg, #0a1220 0%, #0b1324 100%);
+}
+
+.admin-main {
+  background:
+    linear-gradient(180deg, rgba(248, 250, 252, 0.96) 0%, rgba(241, 245, 249, 0.92) 100%),
+    radial-gradient(circle at top, rgba(255, 255, 255, 0.7), transparent 40%);
+  color: #0f172a;
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+
+.admin-main h1,
+.admin-main h2,
+.admin-main h3,
+.admin-main h4,
+.admin-main h5,
+.admin-main h6 {
+  color: #020617;
+}
+
+.admin-main p,
+.admin-main label,
+.admin-main span,
+.admin-main small,
+.admin-main legend,
+.admin-main li,
+.admin-main dt,
+.admin-main dd {
+  color: inherit;
+}
+
+.admin-main .text-slate-400 {
+  color: #64748b !important;
+}
+
+.admin-main .text-slate-500 {
+  color: #475569 !important;
+}
+
+.admin-main .text-slate-600 {
+  color: #334155 !important;
+}
+
+.admin-main input,
+.admin-main textarea,
+.admin-main select {
+  background: rgba(255, 255, 255, 0.78) !important;
+  border-color: rgba(148, 163, 184, 0.28) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+
+.admin-main input:focus,
+.admin-main textarea:focus,
+.admin-main select:focus {
+  border-color: rgba(99, 102, 241, 0.45) !important;
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.12) !important;
+}
+
+.admin-main button,
+.admin-main a {
+  transition: all 180ms ease;
+}
+
+.admin-main::-webkit-scrollbar,
+.admin-main *::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.admin-main::-webkit-scrollbar-track,
+.admin-main *::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.admin-main::-webkit-scrollbar-thumb,
+.admin-main *::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.35);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
