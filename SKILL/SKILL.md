@@ -79,7 +79,8 @@ Always finish with: `npx tsc --noEmit` → `npm run build` → `npm test` → `n
 - Marketplace stores **metadata + links only**. The ZIP lives in the product's own repo; link it via `repoUrl` / `releaseUrl` (or per-version `releaseUrl`).
 - THOTH reads the catalogue through `NEXT_PUBLIC_MARKETPLACE_URL`, with `SiteConfig.marketplaceUrl` overriding it in admin.
 - CORS: add each THOTH origin to `ALLOWED_ORIGINS` on the marketplace.
-- THOTH-side module install (cross-platform) is handled in `THOTH/lib/extensions/registry.ts` — that guard against non-Windows platforms is a known blocker (P3 of the plan).
+- THOTH-side module install (cross-platform) is handled in `THOTH/lib/extensions/registry.ts` — the old non-Windows guard was removed in P3 (commit `f06b904`); ZIP extraction is shared via `THOTH/lib/archive/safe-zip.ts` and URL downloads go through the SSRF guard in `THOTH/lib/extensions/url-guard.ts`.
+- THOTH-side **templates registry** (P4, commit `6044b39`) installs theme packs from ZIP/URL into `THOTH/templates/`, keeps the active template in a file (`templates/.cms-template-state.json`), and publishes design tokens at `GET /api/templates/active` for `THOTH/apps/web` to map to CSS variables. See `THOTH/docs/TEMPLATE_STANDARD.md`.
 
 ## Deployment order (do not reorder)
 

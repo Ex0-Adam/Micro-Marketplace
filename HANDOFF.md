@@ -43,25 +43,33 @@
 - **E2E smoke กับ DB จริงผ่าน:** `GET /setup` needsSetup=true → `POST /setup` สร้าง admin → `POST /login` → `GET /api/admin/*` ไม่มี cookie = **401** → create category/product → unpublished **ซ่อน** จาก public → publish แล้ว**โผล่** (field ตาม `PUBLIC_PRODUCT_SELECT`) → `GET /api/products/[slug]` = 200 — จากนั้น**ล้างข้อมูลทดสอบออกหมด** (users/categories/products = 0) และปิด dev server
 - `public/uploads/` ถูก `.gitignore` และสร้าง runtime เอง — ไม่ต้อง commit
 
+### เสร็จแล้ว (P2–P5 — ตรวจ 2026-10-09)
+
+- **git:** init แล้ว · commit แรก `735e790` → `3d9bec8` (เพิ่ม `.vercel` ใน `.gitignore`) · remote GitHub `Ex0-Adam/Micro-Marketplace` branch `main` · push อยู่กับพี่ฆัง (ฌอนไม่ push origin)
+- **deploy live:** Vercel `micro-marketplace` (team `adam-project`) → **`https://micro-marketplace-iota.vercel.app`** · deploy อัตโนมัติจาก GitHub
+- **admin คนแรก:** user `admin` (`needsSetup:false`, login 200, รหัสผิด 401) · creds อยู่ `/tmp/opencode/marketplace-admin-credentials.txt` (chmod 600)
+- **P2 (THOTH integration) — commit `b41f782`:** `SiteConfig.marketplaceUrl` + `NEXT_PUBLIC_MARKETPLACE_URL` + admin link + sidebar
+- **P3 (module install cross-platform) — commit `f06b904`:** ลบ guard `process.platform !== 'win32'`; แตก ZIP ผ่าน `lib/archive/safe-zip.ts` (`adm-zip`, cross-platform); install-from-URL ผ่าน SSRF guard เดียวกัน; loader = metadata-only · อัปเดต `docs/MODULE_STANDARD.md`
+- **P4 (templates registry) — commit `6044b39`:** `lib/templates/{validator,registry}.ts` + `/api/admin/templates` + `/api/templates/active` (public tokens) + `/admin/templates` UI + `apps/web` consume (CSS vars) + `docs/TEMPLATE_STANDARD.md` + `.env.example` (`TEMPLATES_DIR`, `TEMPLATES_WRITE_ENABLED`)
+- **P5 (verify + docs sync) — เสร็จ 2026-10-09:** ทั้งสอง repo เขียว — marketplace `tsc`=0 · `build`=0 · `test`=17/17 · `lint`=0; THOTH `tsc`=0 · `build`=0 · `test`=52/52 · `lint`=0 errors/20 warnings (ตรวจโดยฌอน)
+
 ### ยังไม่ได้ทำ
 
-- **ยังไม่ init git** ในโฟลเดอร์นี้ (ไม่มี commit)
-- **ยังไม่ deploy** → ยังไม่มี marketplace URL (P2 ต้องรอ URL นี้)
-- `npm audit` 11 ช่องโหว่ (high 10, critical 1) ยังไม่แก้
-- **P2–P5** (THOTH integration, module install cross-platform, templates registry) ยังไม่เริ่ม
+- `npm audit` 11 ช่องโหว่ (high 10, critical 1) ยังไม่แก้ (ยังไม่ได้ตัดสิน)
+- **CORS `ALLOWED_ORIGINS`:** ต้อง redeploy marketplace หลังตั้งค่าให้มีผล (รวม origin ของ THOTH)
+- **Vercel env ฝั่ง THOTH** `NEXT_PUBLIC_MARKETPLACE_URL` — พี่ฆังสั่งข้าม ยังไม่ตั้ง
+- HTML sanitization ของ THOTH (`page.content`) — รอพี่ฆังตัดสิน
 
 ---
 
 ## 3. ก้าวต่อไป (Next Move)
 
-1. **git init + commit แรก** ในโฟลเดอร์นี้ (แล้วแต่พี่ฆังสั่ง — ปกติฌอนไม่ commit เองจนกว่าจะสั่ง)
-2. **Deploy marketplace** (Vercel) → ได้ URL
-3. **P2** — เพิ่ม `marketplaceUrl` เข้า THOTH (`SiteConfig` + `NEXT_PUBLIC_MARKETPLACE_URL` + admin link + sidebar)
-4. **P3** — THOTH module install cross-platform: แก้ `lib/extensions/registry.ts` (~บรรทัด 190 บล็อก `process.platform !== 'win32'`) + install-from-URL + loader + admin UI + อัปเดต `docs/MODULE_STANDARD.md`
-5. **P4** — templates registry + `/admin/templates` + `apps/web` consume + `TEMPLATE_STANDARD`
-6. **P5** — verify both repos + docs sync
+- **P0–P5 เสร็จครบตามแผน** — งานที่เหลือเป็นตัวเลือก/รอคำสั่ง:
+  1. แก้ `npm audit` (10 high / 1 critical) — ยังไม่ได้ตัดสิน
+  2. ตั้ง `ALLOWED_ORIGINS` + redeploy marketplace, และ `NEXT_PUBLIC_MARKETPLACE_URL` ฝั่ง THOTH (พี่ฆังสั่งข้ามไว้)
+  3. เริ่มเฟสถัดไปของ THOTH ตาม `../THOTH/docs/UPDATE_PLAN_2026-10.md` (เฟส 2, 3, 4, 7 ยังไม่เริ่ม)
 
-> ตัวเลือกเสริม: แก้ `npm audit` (10 high / 1 critical) ก่อน deploy — แต่ยังไม่ได้ตัดสิน
+> ฌอนมีข้อจำกัด push: push ได้เฉพาะ `gitea` (LAN) — ล่าสุดถูกปฏิเสธ `User permission denied for writing`; GitHub/origin พี่ฆัง push เอง
 
 ---
 
