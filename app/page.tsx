@@ -31,7 +31,7 @@ export default async function HomePage() {
           <p className="text-xs font-black uppercase tracking-[0.32em] text-cyan-300/80">
             Micro Headless CMS ecosystem
           </p>
-          <h1 className="mt-4 max-w-3xl text-4xl font-black leading-tight tracking-tight md:text-5xl">
+          <h1 className="mt-4 max-w-3xl text-4xl font-black leading-tight tracking-tight text-white md:text-5xl">
             Modules &amp; templates that extend THOTH.
           </h1>
           <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-300">
