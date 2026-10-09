@@ -59,6 +59,17 @@ test("every write endpoint is session-guarded (public auth allowlist only)", () 
   assert.deepEqual(violations, []);
 });
 
+test("initial admin setup requires an operator key and creates the first user atomically", () => {
+  const setupSrc = readFileSync(path.join(API_DIR, "auth", "setup", "route.ts"), "utf8");
+  assert.ok(setupSrc.includes("INITIAL_ADMIN_SETUP_TOKEN"), "setup must require an operator-configured key");
+  assert.ok(setupSrc.includes("timingSafeEqual"), "setup key comparison must be timing-safe");
+  assert.ok(
+    setupSrc.includes("Prisma.TransactionIsolationLevel.Serializable"),
+    "first admin creation must use serializable isolation"
+  );
+  assert.ok(setupSrc.includes('error.code === "P2034"'), "concurrent setup conflicts must be rejected");
+});
+
 test("every /api/admin endpoint is guarded (including GET)", () => {
   const violations = [];
   for (const file of routeFiles) {

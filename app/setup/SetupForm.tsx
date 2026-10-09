@@ -15,6 +15,7 @@ export default function SetupForm({ bootstrap }: { bootstrap: BootstrapStatus })
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [setupToken, setSetupToken] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
@@ -46,7 +47,7 @@ export default function SetupForm({ bootstrap }: { bootstrap: BootstrapStatus })
       const res = await fetch('/api/auth/setup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ username, password, setupToken }),
       });
 
       const data = await res.json();
@@ -99,8 +100,9 @@ export default function SetupForm({ bootstrap }: { bootstrap: BootstrapStatus })
               <ol className="list-decimal space-y-2 pl-5">
                 <li>Set `DATABASE_URL` in the hosting environment.</li>
                 <li>Run `npx prisma db push` or `npx prisma migrate deploy`.</li>
-                <li>Refresh this page.</li>
-                <li>Create the first admin account.</li>
+                <li>Set `INITIAL_ADMIN_SETUP_TOKEN` to a strong random value in the hosting environment.</li>
+                <li>Refresh this page and create the first admin account with that one-time key.</li>
+                <li>Remove `INITIAL_ADMIN_SETUP_TOKEN` after setup is complete.</li>
               </ol>
             </div>
           </section>
@@ -108,7 +110,7 @@ export default function SetupForm({ bootstrap }: { bootstrap: BootstrapStatus })
           <section className="rounded-[1.5rem] border border-white/10 bg-white/5 p-8 shadow-2xl backdrop-blur-xl">
             <h2 className="text-2xl font-black text-white">Create the first administrator</h2>
             <p className="mt-3 text-sm leading-7 text-slate-300">
-              This account is only available when the database connection and schema are ready.
+              This account is only available when the database connection and schema are ready. You also need the one-time setup key configured by the operator.
             </p>
 
             {error && (
@@ -118,6 +120,20 @@ export default function SetupForm({ bootstrap }: { bootstrap: BootstrapStatus })
             )}
 
             <form onSubmit={handleSubmit} className="mt-6 space-y-5">
+              <div>
+                <label htmlFor="setup-token" className="mb-1.5 block text-sm font-medium text-slate-300">One-time setup key</label>
+                <input
+                  id="setup-token"
+                  type="password"
+                  value={setupToken}
+                  onChange={(e) => setSetupToken(e.target.value)}
+                  className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2.5 text-white placeholder-slate-500 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                  required
+                  autoComplete="one-time-code"
+                  disabled={!readyForSetup || loading}
+                />
+              </div>
+
               <div>
                 <label className="mb-1.5 block text-sm font-medium text-slate-300">Username</label>
                 <input
